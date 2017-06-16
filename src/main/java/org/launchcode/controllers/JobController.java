@@ -7,6 +7,7 @@ import org.launchcode.models.forms.SearchForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -44,7 +45,17 @@ public class JobController {
         // new Job and add it to the jobData data store. Then
         // redirect to the job detail view for the new Job.
 
-        return "";
+        if (errors.hasErrors()){
+            model.addAttribute("title", "Add Job");
+            return "new-job";
+        }
+        Job newJob = new Job(jobForm.getName(), jobData.getEmployers().findById(jobForm.getEmployerId()),
+                jobForm.getLocation(), jobForm.getPositionType(), jobForm.getCoreCompetency());
+        jobData.add(newJob);
+        model.addAttribute("jobData", newJob);
+        model.addAttribute("title", "Job by Id");
+
+        return "job-detail";
 
     }
 }
